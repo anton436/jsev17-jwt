@@ -7,7 +7,7 @@ const EditProduct = () => {
   const {
     categories,
     getCategories,
-    createProduct,
+    updateProduct,
     oneProduct,
     getOneProduct,
   } = useProduct();
@@ -15,11 +15,17 @@ const EditProduct = () => {
   const { id } = useParams();
   useEffect(() => {
     getOneProduct(id);
+    getCategories();
   }, []);
 
   useEffect(() => {
-    getCategories();
-  }, []);
+    if (oneProduct) {
+      setTitle(oneProduct.title);
+      setDescription(oneProduct.description);
+      setPrice(oneProduct.price);
+      setCategory(oneProduct.category.id);
+    }
+  }, [oneProduct]);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -36,7 +42,7 @@ const EditProduct = () => {
     if (image) {
       newProduct.append("image", image);
     }
-    createProduct(newProduct);
+    updateProduct(id, newProduct);
   };
   return (
     <div className="w-50 mt-5 m-auto">
@@ -45,20 +51,24 @@ const EditProduct = () => {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="title"
         type="text"
+        value={title}
       />
       <Form.Control
         onChange={(e) => setDescription(e.target.value)}
         placeholder="description"
         type="text"
+        value={description}
       />
       <Form.Control
         onChange={(e) => setPrice(e.target.value)}
         placeholder="price"
         type="text"
+        value={price}
       />
       <Form.Select
         onChange={(e) => setCategory(e.target.value)}
         aria-label="Default select example"
+        value={category}
       >
         <option>Open this select menu</option>
         {categories.map((item) => (
@@ -67,6 +77,7 @@ const EditProduct = () => {
           </option>
         ))}
       </Form.Select>
+      <p>IMAGE BEFORE : {oneProduct ? oneProduct.image : "image is empty"}</p>
       <Form.Control type="file" onChange={(e) => setImage(e.target.files[0])} />
 
       <Button className="mt-3" onClick={handleSave}>
