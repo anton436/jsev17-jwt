@@ -7,6 +7,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContextProvider";
+import favoritesIcon from "../../assets/heart.svg";
 
 function NavScrollExample() {
   const navigate = useNavigate();
@@ -53,6 +54,13 @@ function NavScrollExample() {
               {currentUser ? currentUser : "No auth user"}
             </Nav.Link>
           </Nav>
+          <img
+            width={30}
+            src={favoritesIcon}
+            style={{ cursor: "pointer" }}
+            alt=""
+            onClick={() => navigate("/favorites")}
+          />
           <Form className="d-flex">
             <Form.Control
               type="search"

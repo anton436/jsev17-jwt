@@ -12,6 +12,7 @@ const INIT_STATE = {
   pages: 0,
   categories: [],
   oneProduct: null,
+  favorites: [],
 };
 
 function reducer(state = INIT_STATE, action) {
@@ -28,6 +29,9 @@ function reducer(state = INIT_STATE, action) {
 
     case "GET_ONE_PRODUCT":
       return { ...state, oneProduct: action.payload };
+
+    case "GET_FAVORITES":
+      return { ...state, favorites: action.payload };
 
     default:
       return state;
@@ -96,6 +100,33 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  async function toggleFavorites(id) {
+    try {
+      await axios(`${API}/products/${id}/toggle_favorites/`, getTokens());
+      getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function getFavorites() {
+    try {
+      const res = await axios(`${API}/favorites/`, getTokens());
+      dispatch({ type: "GET_FAVORITES", payload: res.data.results });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function deleteFromFavorites(id) {
+    try {
+      await axios(`${API}/products/${id}/toggle_favorites/`, getTokens());
+      getFavorites();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const values = {
     getProducts,
     products: state.products,
@@ -108,6 +139,11 @@ const ProductContextProvider = ({ children }) => {
     getOneProduct,
     oneProduct: state.oneProduct,
     updateProduct,
+
+    toggleFavorites,
+    getFavorites,
+    favorites: state.favorites,
+    deleteFromFavorites,
   };
   return (
     <productContext.Provider value={values}>{children}</productContext.Provider>
