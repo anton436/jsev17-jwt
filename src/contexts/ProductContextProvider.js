@@ -53,7 +53,6 @@ const ProductContextProvider = ({ children }) => {
       console.log(error);
     }
   }
-  console.log(state);
 
   async function getCategories() {
     try {
@@ -127,6 +126,14 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  async function addReview(review) {
+    try {
+      await axios.post(`${API}/reviews/`, review, getTokens());
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const values = {
     getProducts,
     products: state.products,
@@ -144,6 +151,8 @@ const ProductContextProvider = ({ children }) => {
     getFavorites,
     favorites: state.favorites,
     deleteFromFavorites,
+
+    addReview,
   };
   return (
     <productContext.Provider value={values}>{children}</productContext.Provider>

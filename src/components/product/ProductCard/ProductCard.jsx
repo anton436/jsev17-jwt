@@ -11,8 +11,13 @@ function ProductCard({ item }) {
     <Card style={{ width: "18rem" }}>
       <Card.Img variant="top" src={item.image} />
       <Card.Body>
-        <Card.Title>{item.title}</Card.Title>
-        <Card.Text>{item.price}</Card.Text>
+        <Card.Title
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate(`/products/${item.id}`)}
+        >
+          {item.title}
+        </Card.Title>
+        <Card.Text>{item.price} $</Card.Text>
         {location.pathname === "/products" ? (
           <Button
             variant={item.favorite_by_user ? "success" : "secondary"}
