@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useProduct } from "../../../contexts/ProductContextProvider";
+import { useAuth } from "../../../contexts/AuthContextProvider";
 
 const ProductDetails = () => {
-  const { oneProduct, getOneProduct, addReview } = useProduct();
+  const { oneProduct, getOneProduct, addReview, deleteReview } = useProduct();
+  const { currentUser } = useAuth();
 
   const [text, setText] = useState("");
 
@@ -22,7 +24,6 @@ const ProductDetails = () => {
     setText("");
   };
 
-  console.log(oneProduct);
   return (
     <div>
       <img src={oneProduct?.image} alt="" />
@@ -50,7 +51,7 @@ const ProductDetails = () => {
 
       <div>
         {oneProduct?.reviews.map((item) => (
-          <div key={item.id}>
+          <div key={item.id} className="border m-4">
             <h5>{item.author}</h5>
             <p>
               {item.text}
@@ -58,6 +59,14 @@ const ProductDetails = () => {
                 {moment(item.created_at).format("DD/MM/YYYY HH:mm:ss")}
               </span>
             </p>
+            {item.author === currentUser ? (
+              <div>
+                <button>edit</button>
+                <button onClick={() => deleteReview(item.id, id)}>
+                  delete
+                </button>
+              </div>
+            ) : null}
           </div>
         ))}
       </div>

@@ -134,6 +134,15 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  async function deleteReview(reviewId, productId) {
+    try {
+      await axios.delete(`${API}/reviews/${reviewId}/`, getTokens());
+      getOneProduct(productId);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const values = {
     getProducts,
     products: state.products,
@@ -153,6 +162,7 @@ const ProductContextProvider = ({ children }) => {
     deleteFromFavorites,
 
     addReview,
+    deleteReview,
   };
   return (
     <productContext.Provider value={values}>{children}</productContext.Provider>
