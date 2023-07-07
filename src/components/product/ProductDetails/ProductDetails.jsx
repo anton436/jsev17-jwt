@@ -6,10 +6,17 @@ import { useProduct } from "../../../contexts/ProductContextProvider";
 import { useAuth } from "../../../contexts/AuthContextProvider";
 
 const ProductDetails = () => {
-  const { oneProduct, getOneProduct, addReview, deleteReview } = useProduct();
+  const {
+    oneProduct,
+    getOneProduct,
+    addReview,
+    deleteReview,
+    saveEditedReview,
+  } = useProduct();
   const { currentUser } = useAuth();
 
   const [text, setText] = useState("");
+  const [commentToEdit, setCommentToEdit] = useState(null);
 
   const { id } = useParams();
   useEffect(() => {
@@ -24,9 +31,22 @@ const ProductDetails = () => {
     setText("");
   };
 
+  const handleChange = (e) => {
+    setCommentToEdit({ ...commentToEdit, text: e.target.value });
+  };
+
+  const handleSave = () => {
+    const editedReview = {
+      text: commentToEdit.text,
+      product: commentToEdit.product,
+    };
+    saveEditedReview(editedReview, commentToEdit.id);
+    setCommentToEdit(null);
+  };
+
   return (
     <div>
-      <img src={oneProduct?.image} alt="" />
+      <img width={500} src={oneProduct?.image} alt="" />
       <h3>{oneProduct?.title}</h3>
       <p>{oneProduct?.category.title}</p>
       <p>{oneProduct?.price} $</p>
@@ -53,15 +73,24 @@ const ProductDetails = () => {
         {oneProduct?.reviews.map((item) => (
           <div key={item.id} className="border m-4">
             <h5>{item.author}</h5>
-            <p>
-              {item.text}
-              <span>
-                {moment(item.created_at).format("DD/MM/YYYY HH:mm:ss")}
-              </span>
-            </p>
+            {commentToEdit && commentToEdit.id === item.id ? (
+              <>
+                <input onChange={handleChange} value={commentToEdit.text} />
+                <button onClick={() => setCommentToEdit(null)}>cancel</button>
+                <button onClick={handleSave}>save review</button>
+              </>
+            ) : (
+              <p>
+                {item.text}{" "}
+                <span style={{ fontSize: "10px", color: "lightgrey" }}>
+                  {moment(item.created_at).format("DD/MM/YYYY HH:mm:ss")}
+                </span>
+              </p>
+            )}
+
             {item.author === currentUser ? (
               <div>
-                <button>edit</button>
+                <button onClick={() => setCommentToEdit(item)}>edit</button>
                 <button onClick={() => deleteReview(item.id, id)}>
                   delete
                 </button>

@@ -143,6 +143,19 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  async function saveEditedReview(editedReview, reviewId) {
+    try {
+      await axios.patch(
+        `${API}/reviews/${reviewId}/`,
+        editedReview,
+        getTokens()
+      );
+      getOneProduct(editedReview.product);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const values = {
     getProducts,
     products: state.products,
@@ -163,6 +176,7 @@ const ProductContextProvider = ({ children }) => {
 
     addReview,
     deleteReview,
+    saveEditedReview,
   };
   return (
     <productContext.Provider value={values}>{children}</productContext.Provider>
